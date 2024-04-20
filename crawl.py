@@ -1,6 +1,8 @@
 from moviepy.editor import TextClip, CompositeVideoClip, ColorClip, AudioFileClip
+from io import BytesIO
 
-def make_credits_video(text, output_filename, duration=15, text_color='yellow', font_size=24, fps=24):
+
+def make_credits_video(text, duration=15, text_color='yellow', font_size=24, fps=24):
     # Create a text clip
     text_clip = TextClip(text, fontsize=font_size, color=text_color, size=(640, None), method='caption')
     
@@ -36,10 +38,12 @@ def make_credits_video(text, output_filename, duration=15, text_color='yellow', 
     # Set the frames per second
     video.fps = fps
     
-    # Write the video file
-    video.write_videofile(output_filename, fps=fps)
-
-# Example usage:
-text = "This is the end credits.\nThank you for watching!\nSee you next time."
-make_credits_video(text, "end_credits.mp4")
+    # Write the video to a BytesIO object
+    video.write_videofile("temp.mp4", fps=fps, codec="libx264", audio_codec="aac", bitrate="5000k", threads=4, verbose=False, logger=None)
+    video_bytes = BytesIO()
+    with open('temp.mp4', 'rb') as f:
+        video_bytes.write(f.read())
+    video_bytes.seek(0)
+    
+    return video_bytes
 

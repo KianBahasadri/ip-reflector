@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response, Request
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+from crawl import *
 
 app = FastAPI()
 
@@ -73,10 +74,13 @@ def get_image(request: Request):
     return Response(content=image_bytes, media_type="image/png")
 
 
-
 @app.get("/starwars.mp4", responses={200: {"content": {"video/mp4": {}}}}, response_class=Response)
-def get_image(request: Request):
-  client_ip = str(request.client.host)
-  
-  return Response(content=image_bytes, media_type="image/png")
+def get_starwars_video(request: Request):
+    # Text for the credits
+    text = "cool opinion Bro, \n\n\n\n counterpoint: \n\n\n\n" + str(request.client.host)
 
+    # Generate the video bytes
+    video_bytes = make_credits_video(text)
+
+    # Return the video as a response
+    return Response(content=video_bytes.getvalue(), media_type="video/mp4")
