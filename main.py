@@ -72,3 +72,11 @@ def get_image(request: Request):
     # Return the image as a response
     return Response(content=image_bytes, media_type="image/png")
 
+
+
+@app.get("/starwars.mp4", responses={200: {"content": {"video/mp4": {}}}}, response_class=Response)
+def get_image(request: Request):
+  client_ip = str(request.client.host)
+  
+  return Response(content=image_bytes, media_type="image/png")
+
